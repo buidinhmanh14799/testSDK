@@ -1,33 +1,52 @@
-//
-//  File.swift
-//  
-//
-//  Created by Bùi Đình Mạnh on 19/07/2023.
-//
-import SwiftUI
+import UIKit
 import WebKit
 
-struct WebViewCustom: UIViewRepresentable {
-    let url: String?
-    let token: String?
-    let userName: String?
-    
-    init(url: String = defaultURL, token: String? = nil, userName: String? = nil) {
-        self.url = url
-        self.token = token
-        self.userName = userName
+class CustomWebViewController: UIViewController, WKNavigationDelegate {
+    var webView: WKWebView!
+    var urlString: String
+    var activityIndicator: UIActivityIndicatorView!
+
+    init(urlString: String) {
+        self.urlString = urlString
+        super.init(nibName: nil, bundle: nil)
     }
-    
-    func makeUIView(context: Context) -> WKWebView {
-        
-        let endpoint = "/token?=\(String(describing: token))/userName?=\(String(describing: userName))"
-        let urlResult = createURL(url: url, endpoint: endpoint)
-        let webView = WKWebView()
-        
-        let request = URLRequest(url: urlResult)
-        webView.load(request)
-        return webView
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
-    func updateUIView(_ webView: WKWebView, context: Context) {}
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        webView = WKWebView(frame: view.bounds)
+        webView.navigationDelegate = self
+        view.addSubview(webView)
+
+        // Khởi tạo và cấu hình activity indicator
+        activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator.color = .gray
+        activityIndicator.center = view.center
+        view.addSubview(activityIndicator)
+
+        if let url = URL(string: urlString) {
+            let request = URLRequest(url: url)
+            webView.load(request)
+        }
+    }
+
+    // MARK: WKNavigationDelegate methods
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        // Bắt đầu load trang web, hiển thị activity indicator
+        activityIndicator.startAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        // Load trang web thành công, ẩn activity indicator
+        activityIndicator.stopAnimating()
+    }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        // Lỗi load trang web, ẩn activity indicator
+        activityIndicator.stopAnimating()
+    }
 }
