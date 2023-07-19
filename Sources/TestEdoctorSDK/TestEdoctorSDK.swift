@@ -1,6 +1,10 @@
-public struct TestEdoctorSDK {
-    public private(set) var text = "Hello, World!"
+import SwiftUI
+import WebKit
 
-    public init() {
+public struct TestEdoctorSDK {
+    public static func openWebView(withURL url: String) -> some View {
+        WebViewCustom(url: url)
     }
 }
+
+
