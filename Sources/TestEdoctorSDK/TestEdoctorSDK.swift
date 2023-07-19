@@ -12,6 +12,7 @@ public class TestEdoctorSDK {
         let webView = WKWebView()
         let viewController = UIViewController()
         viewController.view = webView
+        viewController.modalPresentationStyle = .fullScreen
 
         let navigationController = UINavigationController(rootViewController: viewController)
 
