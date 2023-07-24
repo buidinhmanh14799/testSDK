@@ -20,6 +20,7 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
 
         webView = WKWebView(frame: view.bounds)
         webView.navigationDelegate = self
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(webView)
 
         // Khởi tạo và cấu hình activity indicator
@@ -48,5 +49,12 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         // Lỗi load trang web, ẩn activity indicator
         activityIndicator.stopAnimating()
+    }
+}
+
+extension CustomWebViewController {
+    override var modalPresentationStyle: UIModalPresentationStyle {
+        get { return .fullScreen }
+        set { super.modalPresentationStyle = newValue }
     }
 }
