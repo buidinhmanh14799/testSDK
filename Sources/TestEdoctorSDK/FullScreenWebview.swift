@@ -1,15 +1,8 @@
-//
-//  File.swift
-//  
-//
-//  Created by Bùi Đình Mạnh on 24/07/2023.
-//
-
 import SwiftUI
 import WebKit
 
 struct FullScreenWebView: View {
-    @Binding var isPresented: Bool
+    @Environment(\.presentationMode) var presentationMode
     let urlString: String
     
     var body: some View {
@@ -17,7 +10,7 @@ struct FullScreenWebView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    isPresented = false
+                    presentationMode.wrappedValue.dismiss()
                 }) {
                     Text("Close")
                         .foregroundColor(.blue)
@@ -29,6 +22,12 @@ struct FullScreenWebView: View {
                 .edgesIgnoringSafeArea(.all)
             
             Spacer()
+        }
+        .onDisappear {
+            // Đóng hosting controller khi SwiftUI view biến mất
+            if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
+                presentingViewController.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }
