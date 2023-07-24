@@ -14,3 +14,17 @@ public func openWebView(withURL urlString: String) {
    }
 }
 
+func showFullScreenWebView(urlString: String) {
+    // Tạo một SwiftUI View chứa WebView và nút "Close"
+    let fullScreenWebView = FullScreenWebView(isPresented: .constant(true), urlString: urlString)
+    
+    // Tạo một UIHostingController chứa fullScreenWebView
+    let hostingController = UIHostingController(rootView: fullScreenWebView)
+    
+    // Hiển thị UIHostingController fullscreen
+    if let currentViewController = UIApplication.shared.windows.first?.rootViewController {
+        hostingController.modalPresentationStyle = .fullScreen
+        currentViewController.present(hostingController, animated: true, completion: nil)
+    }
+}
+
