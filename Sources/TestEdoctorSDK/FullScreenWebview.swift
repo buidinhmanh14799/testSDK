@@ -36,8 +36,11 @@ struct WebView: UIViewRepresentable {
     let urlString: String
     
     func makeUIView(context: Context) -> WKWebView {
-        
-        return  CustomWebViewController(urlString: urlString)
+        let webView = WKWebView()
+        if let url = URL(string: urlString) {
+            CustomWebViewController(urlString: url)
+        }
+        return webView
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
