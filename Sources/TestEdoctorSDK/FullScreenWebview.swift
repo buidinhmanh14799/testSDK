@@ -1,39 +1,27 @@
-//
-//  File.swift
-//  
-//
-//  Created by Bùi Đình Mạnh on 24/07/2023.
-//
-
 import SwiftUI
 import WebKit
 
 struct FullScreenWebView: View {
-    @State private var isPresented: Bool = true
+    @Environment(\.presentationMode) var presentationMode
     let urlString: String
     
     var body: some View {
-        Group {
-            if isPresented {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            isPresented = false
-                        }) {
-                            Text("Close")
-                                .foregroundColor(.blue)
-                        }
-                        .padding()
-                    }
-                    
-                    WebView(urlString: urlString)
-                        .edgesIgnoringSafeArea(.all)
-                    
-                    Spacer()
+        VStack {
+            HStack {
+                Spacer()
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("Close")
+                        .foregroundColor(.blue)
                 }
-                .transition(.move(edge: .bottom))
+                .padding()
             }
+            
+            WebView(urlString: urlString)
+                .edgesIgnoringSafeArea(.all)
+            
+            Spacer()
         }
         .onDisappear {
             // Đóng hosting controller khi SwiftUI view biến mất
