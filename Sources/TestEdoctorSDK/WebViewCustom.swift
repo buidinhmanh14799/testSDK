@@ -17,7 +17,14 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Thêm nút "Back" vào navigation bar
+        let backButton = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(dismissModal))
+        navigationItem.leftBarButtonItem = backButton
 
+        // Gán màu nền cho UIViewController để phân biệt với nền của UINavigationController
+        
+        view.backgroundColor = .white
         webView = WKWebView(frame: view.bounds)
         webView.navigationDelegate = self
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -33,6 +40,11 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
             let request = URLRequest(url: url)
             webView.load(request)
         }
+    }
+    
+    @objc func dismissModal() {
+        // Đóng màn hình modal khi nút "Back" được nhấn
+        dismiss(animated: true, completion: nil)
     }
 
     // MARK: WKNavigationDelegate methods
@@ -52,4 +64,9 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
     }
 }
 
-
+extension CustomWebViewController {
+    override var modalPresentationStyle: UIModalPresentationStyle {
+        get { return .fullScreen }
+        set { super.modalPresentationStyle = newValue }
+    }
+}
