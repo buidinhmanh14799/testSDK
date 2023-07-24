@@ -64,9 +64,9 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
     }
 }
 
-extension CustomWebViewController {
-    override var modalPresentationStyle: UIModalPresentationStyle {
-        get { return .fullScreen }
-        set { super.modalPresentationStyle = newValue }
-    }
-}
+//extension CustomWebViewController {
+//    override var modalPresentationStyle: UIModalPresentationStyle {
+//        get { return .fullScreen }
+//        set { super.modalPresentationStyle = newValue }
+//    }
+//}
