@@ -14,7 +14,7 @@ public func openWebView(withURL urlString: String) {
    }
 }
 
-func showFullScreenWebView(urlString: String) {
+public func showFullScreenWebView(withURL urlString: String) {
     // Tạo một SwiftUI View chứa WebView và nút "Close"
     let fullScreenWebView = FullScreenWebView(isPresented: .constant(true), urlString: urlString)
     
