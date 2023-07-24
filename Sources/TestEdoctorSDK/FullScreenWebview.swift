@@ -9,26 +9,37 @@ import SwiftUI
 import WebKit
 
 struct FullScreenWebView: View {
-    @Binding var isPresented: Bool
+    @State private var isPresented: Bool = true
     let urlString: String
     
     var body: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button(action: {
-                    isPresented = false
-                }) {
-                    Text("Close")
-                        .foregroundColor(.blue)
+        Group {
+            if isPresented {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            isPresented = false
+                        }) {
+                            Text("Close")
+                                .foregroundColor(.blue)
+                        }
+                        .padding()
+                    }
+                    
+                    WebView(urlString: urlString)
+                        .edgesIgnoringSafeArea(.all)
+                    
+                    Spacer()
                 }
-                .padding()
+                .transition(.move(edge: .bottom))
             }
-            
-            WebView(urlString: urlString)
-                .edgesIgnoringSafeArea(.all)
-            
-            Spacer()
+        }
+        .onDisappear {
+            // Đóng hosting controller khi SwiftUI view biến mất
+            if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
+                presentingViewController.dismiss(animated: true, completion: nil)
+            }
         }
     }
 }
