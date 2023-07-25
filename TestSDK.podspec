@@ -9,5 +9,5 @@ spec.author = { "bui dinh manh" => "buidinhmanh14799@gmail.com" }
 spec.platform = :ios, "13.0"
 spec.swift_version = '5.0'
 spec.source = { :git => "https://github.com/buidinhmanh14799/testSDK.git", :tag => '1.0.2' }
-spec.source_files = "TestEdoctorSDK/**/*.{swift}"
+spec.source_files = "testSDK/testSDK/**/*.{swift}"
 end
