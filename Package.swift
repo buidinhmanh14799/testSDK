@@ -24,9 +24,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "TestEdoctorSDK",
-            dependencies: ["SendBirdCalls"]),
+            dependencies: ["sendbird-calls-ios"]),
         .testTarget(
             name: "TestEdoctorSDKTests",
-            dependencies: ["SendBirdCalls"]),
+            dependencies: ["sendbird-calls-ios"]),
     ]
 )
