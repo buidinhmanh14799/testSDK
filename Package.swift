@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "TestEdoctortéSDK",
+    name: "TestEdoctorSDK",
     platforms: [
         .macOS(.v10_14), .iOS(.v13)
     ],
