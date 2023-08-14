@@ -8,6 +8,11 @@
 import Foundation
 
 public struct User: Codable {
-    var id: Int
-    var name: String
+    public var id: Int
+    public var name: String
+    
+    public init(id: Int, name: String) {
+        self.id = id
+        self.name = name
+    }
 }
