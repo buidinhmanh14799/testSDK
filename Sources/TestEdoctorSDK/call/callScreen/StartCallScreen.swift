@@ -57,6 +57,7 @@ struct StartCallScreen: View {
             
         }
         .onDisappear {
+            requestPermissions()
             // Đóng hosting controller khi SwiftUI view biến mất
             if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
                 presentingViewController.dismiss(animated: true, completion: nil)
