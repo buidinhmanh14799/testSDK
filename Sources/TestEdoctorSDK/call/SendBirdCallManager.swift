@@ -31,6 +31,7 @@ public class SendBirdCallManager: NSObject {
             
             _ = PushRegistryHandler.shared
             _ = AppStatusManager.shared
+            
 
         }
         SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")

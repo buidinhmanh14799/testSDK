@@ -33,7 +33,7 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
         } else {
             print("\(AppStatusManager.shared.state.rawValue) va \(UIApplication.State.active.rawValue)")
             // Report the incoming call to the system
-            if AppStatusManager.shared.state == UIApplication.State.active{
+            if UIApplication.shared.applicationState == UIApplication.State.active{
                 DispatchQueue.main.async {
                     inCommingCall(call: call, isPushNoti: false)
                 }
