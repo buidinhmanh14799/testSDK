@@ -13,6 +13,7 @@ import UIKit
 extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
     
     public func didStartRinging(_ call: DirectCall) {
+        requestPermissions()
         call.delegate = self // To receive call event through `DirectCallDelegate`
         
         guard let uuid = call.callUUID else { return }
