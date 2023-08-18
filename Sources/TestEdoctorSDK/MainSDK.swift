@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WebKit
+import SendBirdCalls
 
 public func openWebView(withURL urlString: String) {
 
