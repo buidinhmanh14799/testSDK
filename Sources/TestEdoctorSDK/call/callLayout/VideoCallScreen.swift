@@ -5,9 +5,11 @@ struct VideoCallScreen: View {
     
     @EnvironmentObject var directCallManager : DirectCallManager
     var onClose: (() -> Void)
-    @State private var isMicMuted = false
-    @State private var isCameraOff = false
+    @State private var isLocalAudioEnabled = true
+    @State private var isLocalVideoEnabled = true
     @State private var isCallActive = true
+    
+    @State private var isFrontCam = true
     
     @State private var secondsElapsed = 0
     var timer: Timer {
@@ -35,7 +37,7 @@ struct VideoCallScreen: View {
                         ZStack {
                             SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.localVideoView))
                             Button(action: {
-
+                                isFrontCam.toggle()
                             }) {
                                 Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
                                     .font(Font.custom("Font Awesome 6 Pro", size: 22))
@@ -45,6 +47,11 @@ struct VideoCallScreen: View {
                             }
                             .padding(.top, 100)
                             .padding(.leading, 100)
+                            .onChange(of: isFrontCam) { newValue in
+                                directCallManager.directCall?.switchCamera() { error in
+                                    
+                                }
+                            }
                         }.frame(width: 157, height: 157).background(Color.gray)
                             .cornerRadius(18)
 
@@ -58,7 +65,7 @@ struct VideoCallScreen: View {
                         
                         HStack {
                             Spacer()
-                            AvatarView(UrlString: "https://demoda.vn/wp-content/uploads/2022/08/hinh-anh-avatar-nu-de-thuong.jpg", size: 62).padding()
+                            AvatarView(UrlString: directCallManager.directCall?.caller?.profileURL, size: 62).padding()
                             VStack{
                                 HStack {
                                     Text("\(directCallManager.directCall?.caller?.nickname ?? "---")")
@@ -130,27 +137,41 @@ struct VideoCallScreen: View {
                             Spacer()
                             
                             Button(action: {
-                                isMicMuted.toggle()
-                                //                        directCallManager.directCall?.mut = isMicMuted
+                                isLocalAudioEnabled.toggle()
+
                             }) {
                                 Image(systemName: "mic.fill")
                                     .frame(width: 43.904, height: 43.904)
                                     .font(.system(size: 22))
-                                    .foregroundColor(isMicMuted ? Color.white : Color.gray)
-                                    .background(isMicMuted ? Color.blue : Color(red: 0.91, green: 0.91, blue: 0.93))
+                                    .foregroundColor(isLocalAudioEnabled ? Color.white : Color.gray)
+                                    .background(isLocalAudioEnabled ? Color.blue : Color(red: 0.91, green: 0.91, blue: 0.93))
                                     .clipShape(Circle())
+                            }
+                            .onChange(of: isLocalAudioEnabled) { newValue in
+                                if newValue {
+                                    directCallManager.directCall?.muteMicrophone()
+                                } else {
+                                    directCallManager.directCall?.unmuteMicrophone()
+                                }
                             }
                             Spacer()
                             
                             Button(action: {
-                                isCameraOff.toggle()
+                                isLocalVideoEnabled.toggle()
                                 //                        directCallManager.directCall?.video = !isCameraOff
                             }) {
                                 Image(systemName: "video.fill")
                                     .frame(width: 43.904, height: 43.904)
-                                    .foregroundColor(isCameraOff ? Color.white : Color.gray)
-                                    .background(isCameraOff ? Color.blue : Color(red: 0.91, green: 0.91, blue: 0.93))
+                                    .foregroundColor(isLocalVideoEnabled ? Color.white : Color.gray)
+                                    .background(isLocalVideoEnabled ? Color.blue : Color(red: 0.91, green: 0.91, blue: 0.93))
                                     .clipShape(Circle())
+                            }
+                            .onChange(of: isLocalVideoEnabled) { newValue in
+                                if newValue {
+                                    directCallManager.directCall?.startVideo()
+                                } else {
+                                    directCallManager.directCall?.stopVideo()
+                                }
                             }
                             Spacer()
                             
@@ -191,6 +212,10 @@ struct VideoCallScreen: View {
                 .frame(width: geometry.size.width, height: geometry.size.height)
             }.frame(width: geometry.size.width, height: geometry.size.height)
             .background(Color.green)
+            .onAppear {
+                isLocalAudioEnabled = directCallManager.directCall?.isLocalAudioEnabled ?? true
+                isLocalVideoEnabled = directCallManager.directCall?.isLocalVideoEnabled ?? true
+            }
         }
     }
 }

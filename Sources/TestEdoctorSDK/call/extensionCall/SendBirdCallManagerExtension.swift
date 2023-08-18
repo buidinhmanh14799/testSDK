@@ -31,7 +31,6 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
             }
             call.end()
         } else {
-            print("\(AppStatusManager.shared.state.rawValue) va \(UIApplication.State.active.rawValue)")
             // Report the incoming call to the system
             if UIApplication.shared.applicationState == UIApplication.State.active{
                 DispatchQueue.main.async {
@@ -42,9 +41,6 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
             }
         }
         
-        
-
-        print("Incoming call from \(AppStatusManager.shared.state.rawValue )")
     }
     
     public func didEstablish(_ call: DirectCall) {
