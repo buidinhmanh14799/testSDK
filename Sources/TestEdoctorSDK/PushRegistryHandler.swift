@@ -14,24 +14,34 @@ class PushRegistryHandler: NSObject, PKPushRegistryDelegate {
     private override init() {
         super.init()
         // Khởi tạo PKPushRegistry và đăng ký delegate
-        let pushRegistry = PKPushRegistry(queue: nil)
+        let pushRegistry = PKPushRegistry(queue: DispatchQueue.main)
         pushRegistry.delegate = self
-        pushRegistry.desiredPushTypes = [PKPushType.voIP]
+        pushRegistry.desiredPushTypes = [.voIP]
     }
 
     func pushRegistry(_ registry: PKPushRegistry, didUpdate credentials: PKPushCredentials, for type: PKPushType) {
-        // Xử lý cập nhật credentials
+        
+        
+        SendBirdCall.registerVoIPPush(token: credentials.token, unique: true) { (error) in
+            guard error == nil else { return }
+            
+            guard var userInfo = UserDataManager.getUserInfo() else {return}
+            userInfo.voIpToken = credentials.token
+            UserDataManager.saveUserInfo(userInfo: userInfo)
+        }
     }
 
     func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenFor type: PKPushType) {
         // Xử lý khi push token bị vô hiệu hóa
+        print("push token đã bị vô hiệu hóa")
     }
 
     func pushRegistry(_ registry: PKPushRegistry, didReceiveIncomingPushWith payload: PKPushPayload, for type: PKPushType) {
         // Xử lý khi nhận được push notification
         SendBirdCall.pushRegistry(registry, didReceiveIncomingPushWith: payload, for: type, completionHandler: { callUUID in
-            //...
+            print("callUUID\(String(describing: callUUID))")
         })
-        print("ok1")
     }
 }
+
+

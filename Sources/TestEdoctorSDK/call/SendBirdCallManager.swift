@@ -10,7 +10,7 @@ import UIKit
 import CallKit
 import SendBirdCalls
 
-public class SendBirdCallManager: NSObject, SendBirdCallDelegate {
+public class SendBirdCallManager: NSObject {
 
     public static let shared = SendBirdCallManager()
 
@@ -18,72 +18,49 @@ public class SendBirdCallManager: NSObject, SendBirdCallDelegate {
         super.init()
     }
 
-    public func configure(appId: String, userId: String, accessToken: String, deviceToken: Data) {
+    public func configure(appId: String, userId: String, accessToken: String) {
         SendBirdCall.configure(appId: appId)
         
         let params = AuthenticateParams(userId: userId, accessToken: accessToken)
         SendBirdCall.authenticate(with: params) { (user, error) in
+            
             print("okoko authenticate")
             
-                    SendBirdCall.registerVoIPPush(token: deviceToken) { error in
-                                        if let error = error {
-                                            print("Error registering VoIP push:", error.localizedDescription)
-                                        } else {
-                                            print("Successfully registered VoIP push")
-                                        }
-                                    }
+            let userInfo = UserInfo(appId: appId, userId: userId, accessToken: accessToken)
+            UserDataManager.saveUserInfo(userInfo: userInfo)
+            
+            _ = PushRegistryHandler.shared
+
         }
-        _ = PushRegistryHandler.shared
         SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")
     }
     
     public func login( userId: String, accessToken: String) {
+        SendBirdCall.configure(appId: "44745875-6069-46A9-A1A6-0B2A318E4632")
         let params = AuthenticateParams(userId: userId, accessToken: accessToken)
         SendBirdCall.authenticate(with: params) { (user, error) in
             print("okoko authenticate")
+
         }
         SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")
     }
 
-//    deinit {
-//        SendBirdCall.removeDelegate(identifier: "com.edoctor.AppTestSDK")
-//    }
+    deinit {
+        SendBirdCall.removeDelegate(identifier: "com.edoctor.AppTestSDK")
+    }
     
-    public func makeCall(calleeId: String) {
-        let params = DialParams(calleeId: calleeId, callOptions: CallOptions())
-
-        let directCall = SendBirdCall.dial(with: params) { directCall, error in
-            // The call was successfully made to calleeId.
-            DirectCallManager.shared.setDirectCall(directCall: directCall!);
-            
+    public func makeCall(calleeId: String, isVideoCall: Bool) {
+        let directCall = DirectCallManager.shared.startCall(calleeId: calleeId, isVideoCall: isVideoCall)
+        directCall.delegate = self
+    }
+    
+    public func removeVoIPPushToken() {
+        
+        guard let userInfo = UserDataManager.getUserInfo() else {return}
+        
+        SendBirdCall.unregisterVoIPPush(token : userInfo.voIpToken) { (error) in
+     
         }
-
-       
-    }
-    
-    //even
-
-    public func didStartRinging(_ call: DirectCall) {
-        DispatchQueue.main.async {
-            inCommingCall(call: call)
-        }
-        print("Incoming call from \(call.caller?.userId ?? "")")
-    }
-    
-    public func didEstablish(_ call: DirectCall) {
-        print("Incoming call from didEstablish\(call.caller?.userId ?? "")")
-    }
-    
-    public func didConnect(_ call: DirectCall) {
-        print("Incoming call from didConnect\(call.caller?.userId ?? "")")
-    }
-    
-    public func didRemoteAudioSettingsChange(_ call: DirectCall) {
-        print("Incoming call from didRemoteAudioSettingsChange\(call.caller?.userId ?? "")")
-    }
-    
-    public func didEnd(_ call: DirectCall) {
-        print("Incoming call from didEnd\(call.caller?.userId ?? "")")
     }
     
 }

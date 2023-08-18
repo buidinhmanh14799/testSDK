@@ -1,14 +1,18 @@
 import SwiftUI
 import WebKit
 
-struct StartCallLayout: View {
+struct StartCallScreen: View {
     @Environment(\.presentationMode) var presentationMode
     
     @ObservedObject var directCallManager = DirectCallManager.shared
+    @ObservedObject var callStatusManager = CallStatusManager.shared
     
     var body: some View {
         VStack {
-            ZStack {
+            if callStatusManager.callStatus == .videoCalling || callStatusManager.callStatus == .calling {
+                VideoCallScreen(onClose: onClose).environmentObject(directCallManager)
+            } else {
+                ZStack {
                        Color.black.edgesIgnoringSafeArea(.all)
                        
                        VStack {
@@ -25,7 +29,7 @@ struct StartCallLayout: View {
                                .font(.title)
                                .foregroundColor(.white)
                            
-                           Text(directCallManager.directCall?.callee?.nickname ?? "Unknown")
+                           Text(directCallManager.directCall?.callee?.nickname ?? "Đang kết nối....")
                                .font(.subheadline)
                                .foregroundColor(.gray)
                            
@@ -49,7 +53,8 @@ struct StartCallLayout: View {
                            }
                        }
                    }
-                   .navigationBarHidden(true)
+            }
+            
         }
         .onDisappear {
             // Đóng hosting controller khi SwiftUI view biến mất
@@ -57,6 +62,16 @@ struct StartCallLayout: View {
                 presentingViewController.dismiss(animated: true, completion: nil)
             }
         }
+        .onChange(of: callStatusManager.callStatus) { newValue in
+            if newValue == .finish {
+                onClose()
+            }
+        }
+    }
+    
+    
+    func onClose () {
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

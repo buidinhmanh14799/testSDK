@@ -7,28 +7,33 @@
 
 import SwiftUI
 
-struct IncommingCall: View {
+struct IncommingCallScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var directCallManager = DirectCallManager.shared
-    
+    @ObservedObject var callStatusManager = CallStatusManager.shared
     
     var body: some View {
         VStack {
-            if directCallManager.callStatus == .comming {
-                IncommingCallLayout(onClose: onClose).environmentObject(directCallManager)
-            }else {
-                VideoCallScreen(onClose: onClose).environmentObject(directCallManager)
+            if (callStatusManager.callStatus == .videoCalling ) {
+                VideoCallScreen(onClose: onClose).environmentObject(directCallManager).environmentObject(callStatusManager)
+            } else if callStatusManager.callStatus == .finish {
+                FinnishCallLayout()
+            } else {
+                IncomingVideoCallLayout(onClose: onClose).environmentObject(directCallManager).environmentObject(callStatusManager)
             }
             
         }
-        .padding()
+        .edgesIgnoringSafeArea(.all)
         .onDisappear {
             // Đóng hosting controller khi SwiftUI view biến mất
             if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
                 presentingViewController.dismiss(animated: true, completion: nil)
             }
-            requestPermissions()
-            
+        }
+        .onChange(of: callStatusManager.callStatus) { newValue in
+            if newValue == .none {
+                onClose()
+            }
         }
     }
     
