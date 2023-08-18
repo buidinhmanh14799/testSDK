@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-class AppStatusManager: ObservableObject {
+public class AppStatusManager: ObservableObject {
     static let shared = AppStatusManager()
     
     @Published var state: UIApplication.State = .inactive
