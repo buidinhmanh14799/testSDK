@@ -49,10 +49,7 @@ struct FullScreenWebView: View {
                 
             }.padding(.top, 30)
             
-            WebView(urlString: urlString, webView: webView)
-                .edgesIgnoringSafeArea(.all)
-            
-            Spacer()
+            WebView(urlString: urlString, webView: webView).padding(.top, -10)
         }
         .edgesIgnoringSafeArea(.all)
         .onDisappear {
