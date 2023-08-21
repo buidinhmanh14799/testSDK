@@ -25,11 +25,10 @@ class PushRegistryHandler: NSObject, PKPushRegistryDelegate {
         SendBirdCall.registerVoIPPush(token: credentials.token, unique: true) { (error) in
             guard error == nil else { return }
             
-            guard var userInfo = UserDataManager.getUserInfo() else {return}
-            userInfo.voIpToken = credentials.token
-            UserDataManager.saveUserInfo(userInfo: userInfo)
+            VoIpTokenManager.saveToken(voIpToken: credentials.token)
         }
     }
+    
 
     func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenFor type: PKPushType) {
         // Xử lý khi push token bị vô hiệu hóa

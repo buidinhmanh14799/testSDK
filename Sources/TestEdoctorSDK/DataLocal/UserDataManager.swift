@@ -42,5 +42,4 @@ struct UserInfo: Codable {
     var appId: String
     var userId: String
     var accessToken: String
-    var voIpToken: Data?
 }

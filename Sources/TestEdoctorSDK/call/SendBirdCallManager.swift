@@ -30,7 +30,6 @@ public class SendBirdCallManager: NSObject {
             UserDataManager.saveUserInfo(userInfo: userInfo)
             
             _ = PushRegistryHandler.shared
-            
 
         }
         SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")
@@ -41,14 +40,19 @@ public class SendBirdCallManager: NSObject {
         let params = AuthenticateParams(userId: userId, accessToken: accessToken)
         SendBirdCall.authenticate(with: params) { (user, error) in
             print("okoko authenticate")
+            guard let voIpToken = VoIpTokenManager.getToken() else {return}
+            
+            SendBirdCall.registerVoIPPush(token: voIpToken, unique: true) { (error) in
+                guard error == nil else { return }
+            }
 
         }
         SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")
     }
 
-    deinit {
-        SendBirdCall.removeDelegate(identifier: "com.edoctor.AppTestSDK")
-    }
+//    deinit {
+//        SendBirdCall.removeDelegate(identifier: "com.edoctor.AppTestSDK")
+//    }
     
     public func makeCall(calleeId: String, isVideoCall: Bool) {
         let directCall = DirectCallManager.shared.startCall(calleeId: calleeId, isVideoCall: isVideoCall)
@@ -57,9 +61,9 @@ public class SendBirdCallManager: NSObject {
     
     public func removeVoIPPushToken() {
         
-        guard let userInfo = UserDataManager.getUserInfo() else {return}
+        guard let voIpToken = VoIpTokenManager.getToken() else {return}
         
-        SendBirdCall.unregisterVoIPPush(token : userInfo.voIpToken) { (error) in
+        SendBirdCall.unregisterVoIPPush(token : voIpToken) { (error) in
      
         }
     }
