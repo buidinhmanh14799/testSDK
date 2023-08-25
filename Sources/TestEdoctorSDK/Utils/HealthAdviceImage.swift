@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct HealthAdviceImage: View {
-    var body: some View {
+public struct HealthAdviceImage: View {
+    public var body: some View {
         VStack {
             Image("TuVan").frame(width: 67, height: 67)
             Text("Tư vấn sức khoẻ")
