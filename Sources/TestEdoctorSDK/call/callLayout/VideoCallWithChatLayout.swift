@@ -24,14 +24,14 @@ struct VideoCallWithChatLayout: View {
                     SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.remoteVideoView))
                     
                 }
-                .frame(width: 157, height: 157).background(Color.gray)
+                .frame(width: 157, height: 240).background(Color.gray)
                 .cornerRadius(18)
                 .scaleEffect(isScaled ? 8 : 1.0)
                 .animation(.easeInOut)
                 .position(location)
                 .gesture(
                     simpleDrag
-                )
+                ) 
                 .gesture(
                     TapGesture()
                         .onEnded {

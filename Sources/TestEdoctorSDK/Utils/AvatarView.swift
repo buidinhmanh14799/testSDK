@@ -12,22 +12,14 @@ struct AvatarView: View {
     var size: CGFloat
     
     var body: some View {
-        if UrlString != nil {
-            if #available(iOS 15.0, *) {
-                AsyncImage(url: URL(string: UrlString!)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: size, height: size)
-                        .clipShape(Circle())
-                } placeholder: {
-                    Image(systemName: "person.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: size, height: size)
-                        .clipShape(Circle())
-                }
-            } else {
+        if #available(iOS 15.0, *), UrlString != nil {
+            AsyncImage(url: URL(string: UrlString!)) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: size, height: size)
+                    .clipShape(Circle())
+            } placeholder: {
                 Image(systemName: "person.fill")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
