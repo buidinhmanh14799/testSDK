@@ -8,6 +8,9 @@
 import SwiftUI
 
 public struct HealthAdviceImage: View {
+    public init() {
+        
+    }
     public var body: some View {
         VStack {
             Image("TuVan").frame(width: 67, height: 67)
