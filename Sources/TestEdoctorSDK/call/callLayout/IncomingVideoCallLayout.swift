@@ -18,7 +18,7 @@ struct IncomingVideoCallLayout: View {
     
     @State private var isAnimating = false
     
-    @State private var secondsRemaining = 60
+    @State private var secondsRemaining = 59
     var timer: Timer {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if self.secondsRemaining > 0 {
@@ -35,8 +35,13 @@ struct IncomingVideoCallLayout: View {
                 Rectangle()
                     .foregroundColor(.clear)
                     .frame(width: geometry.size.width, height: geometry.size.height)
+                    .background(Color.white.opacity(0.4))
+                
+                Rectangle()
+                    .foregroundColor(.clear)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
                     .background(callStatusManager.callStatus == .comming ? Color(red: 0.02, green: 0.56, blue: 0):  Color(red: 0.85, green: 0.65, blue: 0.55))
-                    .opacity(0.5)
+                    .opacity(0.3)
                 VStack {
                     Spacer()
                     
@@ -76,25 +81,28 @@ struct IncomingVideoCallLayout: View {
                         .multilineTextAlignment(.center)
                         .padding(0)
                     
-                    if callStatusManager.callStatus == .comming {
-                        Text("\(secondsRemaining)S")
-                            .font(
-                                Font.custom("Inter", size: 30)
-                                    .weight(.bold)
-                            )
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(secondsRemaining < 10 ? .red : .white)
-                            .padding(.top, 36)
-                    }else {
-                        Text("\(getTextCallStatus(callStatus: callStatusManager.callStatus))")
-                            .font(
-                                Font.custom("Inter", size: 16)
-                                    .weight(.bold)
-                            )
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.white)
-                            .padding(.top, 36)
-                    }
+                    Group {
+                        if callStatusManager.callStatus == .comming {
+                            Text("\(secondsRemaining)S")
+                                .font(
+                                    Font.custom("Inter", size: 30)
+                                        .weight(.bold)
+                                )
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(secondsRemaining < 10 ? .red : .white)
+                                .padding(.top, 36)
+                        }else {
+                            Text("\(getTextCallStatus(callStatus: callStatusManager.callStatus))")
+                                .font(
+                                    Font.custom("Inter", size: 16)
+                                        .weight(.bold)
+                                )
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.white)
+                                .padding(.top, 36)
+                        }
+                    }.frame(width: .infinity, height: 40)
+
 
 
                     
@@ -102,69 +110,86 @@ struct IncomingVideoCallLayout: View {
                     Spacer()
                     
                     VStack {
+                    
                         HStack{
                             Spacer()
                             Button(action: {
                                 directCallManager.endCall()
                                 onClose()
                             }) {
-                                Image(systemName: "phone.down.fill")
-                                    .font(.system(size: 27
-                                                 ))
-                                    .frame(width: 60, height: 60)
-                                    .foregroundColor(.white)
-                                    .background(Color(red: 0.96, green: 0.13, blue: 0.18))
+                                ZStack {
+                                    Image(systemName: "phone.down.fill")
+                                        .font(.system(size: 27))
+                                        .frame(width: 60, height: 60)
+                                        .foregroundColor(.white)
+                                        .padding(.bottom, 5)
+
+                                    Text("x")
+                                        .foregroundColor(.white)
+                                        .font(
+                                            Font.custom("Inter", size: 15)
+                                                .weight(.bold)
+                                        )
+                                        .padding(.top, 10)
+                                }.background(Color(red: 0.96, green: 0.13, blue: 0.18))
                                     .clipShape(Circle())
-                                
+
                             }
-                            Spacer()
                             
-                            Button(action: {
-                                DispatchQueue.main.async {
-                                    directCallManager.acceptCall(isMicOn: isMicMuted, isCamOn: isCameraOff)
-                                }
-                            }) {
-                                Image(systemName: "phone.fill")
-                                    .font(.system(size: 27))
-                                    .frame(width: 60, height: 60)
-                                    .foregroundColor(Color.white)
-                                    .background(Color(red: 0.02, green: 0.56, blue: 0))
-                                    .clipShape(Circle())
-                            }
                             Spacer()
-                        }.padding()
+                            if callStatusManager.callStatus == .comming {
+                                Button(action: {
+                                    DispatchQueue.main.async {
+                                        directCallManager.acceptCall(isMicOn: isMicMuted, isCamOn: isCameraOff)
+                                    }
+                                }) {
+                                    Image(systemName: "phone.fill")
+                                        .font(.system(size: 27))
+                                        .frame(width: 60, height: 60)
+                                        .foregroundColor(Color.white)
+                                        .background(Color(red: 0.02, green: 0.56, blue: 0))
+                                        .clipShape(Circle())
+                                }
+                                Spacer()
+                            }
+
+                        }
+
 
                         HStack{
-                            Spacer()
-                            Button(action: {
-                                isMicMuted.toggle()
-                            }) {
-                                Image(systemName: "mic.fill")
-                                    .frame(width: 60, height: 60)
-                                    .font(.system(size: 20
-                                                 ))
-                                    .foregroundColor(Color.white)
-                                    .background(isMicMuted ? Color.blue : Color.gray)
-                                    .clipShape(Circle())
-                            }
-                            
-                            Spacer()
-                            
-                            Button(action: {
-                                isCameraOff.toggle()
-                            }) {
-                                Image(systemName: "video.fill")
-                                    .font(.system(size: 20))
-                                    .frame(width: 60, height: 60)
-                                    .foregroundColor(Color.white)
-                                    .background(isCameraOff ? Color.blue : Color.gray)
-                                    .clipShape(Circle())
-                            }
-                            Spacer()
-                        }.padding(.horizontal)
+                            if callStatusManager.callStatus == .comming {
+                                Spacer()
+                                Button(action: {
+                                    isMicMuted.toggle()
+                                }) {
+                                    Image(systemName: "mic.fill")
+                                        .frame(width: 50, height: 50)
+                                        .font(.system(size: 20
+                                                     ))
+                                        .foregroundColor(Color.white)
+                                        .background(isMicMuted ? Color.blue : Color.gray)
+                                        .clipShape(Circle())
+                                }.padding(16)
+                                
+                                
+                                Button(action: {
+                                    isCameraOff.toggle()
+                                }) {
+                                    Image(systemName: "video.fill")
+                                        .font(.system(size: 20))
+                                        .frame(width: 50, height: 50)
+                                        .foregroundColor(Color.white)
+                                        .background(isCameraOff ? Color.blue : Color.gray)
+                                        .clipShape(Circle())
+                                }.padding(16)
+                                Spacer()
 
+                            }
+                        }.frame(width: .infinity, height: 50)
+                        .padding(.top, 48)
+
+                        }
                         
-                    }
                     
                     
                     Spacer()

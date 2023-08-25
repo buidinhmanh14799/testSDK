@@ -15,17 +15,23 @@ struct IncommingCallScreen: View {
     var body: some View {
         VStack {
             if (callStatusManager.callStatus == .videoCalling ) {
-                VideoCallScreen(onClose: onClose).environmentObject(directCallManager).environmentObject(callStatusManager)
-            } else if callStatusManager.callStatus == .finish {
+                VideoCallScreen(onClose: onClose)
+                    .environmentObject(directCallManager)
+                    .environmentObject(callStatusManager)
+            } else if callStatusManager.callStatus == .finish || callStatusManager.callStatus == .none{
                 FinnishCallLayout()
+            } else if callStatusManager.callStatus == .videoCallWithChat {
+                VideoCallWithChatLayout()
+                    .environmentObject(directCallManager)
             } else {
-                IncomingVideoCallLayout(onClose: onClose).environmentObject(directCallManager).environmentObject(callStatusManager)
+                IncomingVideoCallLayout(onClose: onClose)
+                    .environmentObject(directCallManager)
+                    .environmentObject(callStatusManager)
             }
             
         }
         .edgesIgnoringSafeArea(.all)
         .onDisappear {
-            requestPermissions()
             // Đóng hosting controller khi SwiftUI view biến mất
             if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
                 presentingViewController.dismiss(animated: true, completion: nil)

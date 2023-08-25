@@ -11,6 +11,9 @@ struct StartCallScreen: View {
         VStack {
             if callStatusManager.callStatus == .videoCalling || callStatusManager.callStatus == .calling {
                 VideoCallScreen(onClose: onClose).environmentObject(directCallManager)
+            } else if callStatusManager.callStatus == .videoCallWithChat {
+                VideoCallWithChatLayout()
+                    .environmentObject(directCallManager)
             } else {
                 ZStack {
                        Color.black.edgesIgnoringSafeArea(.all)
@@ -56,8 +59,8 @@ struct StartCallScreen: View {
             }
             
         }
+        .edgesIgnoringSafeArea(.all)
         .onDisappear {
-            requestPermissions()
             // Đóng hosting controller khi SwiftUI view biến mất
             if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
                 presentingViewController.dismiss(animated: true, completion: nil)

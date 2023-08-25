@@ -4,13 +4,32 @@ import WebKit
 struct FullScreenWebView: View {
     @Environment(\.presentationMode) var presentationMode
     let urlString: String
+    
+    var body: some View {
+        WebViewLayout(onClose: onClose, urlString: urlString)
+        .edgesIgnoringSafeArea(.all)
+        .onDisappear {
+            if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
+                presentingViewController.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func onClose () {
+        presentationMode.wrappedValue.dismiss()
+    }
+}
+
+struct WebViewLayout: View {
+    let onClose: (() -> Void)
+    let urlString: String
     private let webView = WKWebView()
     
     var body: some View {
         VStack {
             HStack {
                 Button(action: {
-                    presentationMode.wrappedValue.dismiss()
+                    onClose()
                 }) {
                     Image(systemName: "xmark.circle")
                         .font(.system(size: 24))
@@ -45,18 +64,12 @@ struct FullScreenWebView: View {
                         .frame(width: 24, height: 24)
                         .foregroundColor(.gray)
                         .clipShape(Circle())
+                        .rotationEffect(.degrees(50))
                 }.padding()
                 
             }.padding(.top, 30)
             
             WebView(urlString: urlString, webView: webView).padding(.top, -10)
-        }
-        .edgesIgnoringSafeArea(.all)
-        .onDisappear {
-            // Đóng hosting controller khi SwiftUI view biến mất
-            if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
-                presentingViewController.dismiss(animated: true, completion: nil)
-            }
         }
     }
 }

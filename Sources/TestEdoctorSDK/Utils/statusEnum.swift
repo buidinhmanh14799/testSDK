@@ -15,6 +15,7 @@ public enum CallStatus {
     case videoCalling
     case reconnect
     case finish
+    case videoCallWithChat
 }
 
 public func getTextCallStatus(callStatus: CallStatus) -> String {

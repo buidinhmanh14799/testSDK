@@ -29,7 +29,16 @@ struct VideoCallScreen: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+
                 SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.remoteVideoView)).frame(width: geometry.size.width, height: geometry.size.height)
+                
+                if directCallManager.directCall == nil || directCallManager.directCall?.isRemoteVideoEnabled == false {
+                    BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL)
+                        .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+                        .blur(radius: 5)
+                        .opacity(0.7)
+                }
+                
                 
                 VStack {
                     HStack {
@@ -125,6 +134,7 @@ struct VideoCallScreen: View {
                         
                         HStack {
                             Button(action: {
+                                CallStatusManager.shared.setCallStatus(value: .videoCallWithChat)
 
                             }) {
                                 Image(systemName: "ellipsis.message.fill")
@@ -191,14 +201,26 @@ struct VideoCallScreen: View {
                                 directCallManager.endCall()
                                 onClose()
                             }) {
-                                Image(systemName: "phone.down.fill")
-                                    .font(.system(size: 22))
-                                    .frame(width: 43.904, height: 43.904)
-                                    .foregroundColor(.white)
-                                    .background(Color(red: 0.96, green: 0.13, blue: 0.18))
+                                ZStack {
+                                    Image(systemName: "phone.down.fill")
+                                        .font(.system(size: 22))
+                                        .frame(width: 43.904, height: 43.904)
+                                        .foregroundColor(.white)
+                                        .padding(.bottom, 5)
+
+                                    Text("x")
+                                        .foregroundColor(.white)
+                                        .font(
+                                            Font.custom("Inter", size: 12)
+                                                .weight(.bold)
+                                        )
+                                        .padding(.top, 10)
+                                }.background(Color(red: 0.96, green: 0.13, blue: 0.18))
                                     .clipShape(Circle())
 
                             }
+                            
+                            
 
                         }.padding(.horizontal, 24)
                             .padding(.vertical, 5)
@@ -225,6 +247,7 @@ struct VideoCallScreen: View {
 //        VideoCallScreen()
 //    }
 //}
+
 
 
 struct RemoteVideoView: View {

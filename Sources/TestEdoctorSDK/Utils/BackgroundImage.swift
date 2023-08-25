@@ -17,14 +17,15 @@ struct BackgroundImage: View {
                         .resizable()
                         .scaledToFill()
                         .edgesIgnoringSafeArea(.all)
+                        .blur(radius: 5)
                 } placeholder: {
-                    Color(red: 0.02, green: 0.56, blue: 0)
+                    Color(red: 1, green: 1, blue: 1)
                 }
             } else {
-                Color(red: 0.02, green: 0.56, blue: 0)
+                Color(red: 1, green: 1, blue: 1)
             }
         }else {
-            Color(red: 0.02, green: 0.56, blue: 0)
+            Color(red: 1, green: 1, blue: 1)
         }
 
     }

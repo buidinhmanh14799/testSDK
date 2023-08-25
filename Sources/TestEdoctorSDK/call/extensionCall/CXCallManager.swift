@@ -146,20 +146,20 @@ extension CXCallManager: CXProviderDelegate {
             }
             
             if call.endResult == DirectCallEndResult.none || call.endResult == .unknown {
-//                SendBirdCall.authenticateIfNeed { [weak call] (error) in
-//                    guard let call = call, error == nil else {
-//                        action.fail()
-//                        return
-//                    }
-//
-//                    call.end {
-//                        action.fulfill()
-//
-//                        // End background task
-//                        UIApplication.shared.endBackgroundTask(backgroundTaskID)
-//                        backgroundTaskID = .invalid
-//                    }
-//                }
+                SendBirdCall.authenticateIfNeed { [weak call] (error) in
+                    guard let call = call, error == nil else {
+                        action.fail()
+                        return
+                    }
+
+                    call.end {
+                        action.fulfill()
+
+                        // End background task
+                        UIApplication.shared.endBackgroundTask(backgroundTaskID)
+                        backgroundTaskID = .invalid
+                    }
+                }
             } else {
                 action.fulfill()
             }

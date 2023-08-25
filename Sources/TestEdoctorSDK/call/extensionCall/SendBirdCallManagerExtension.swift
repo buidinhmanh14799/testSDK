@@ -18,11 +18,11 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
         guard let uuid = call.callUUID else { return }
         guard CXCallManager.shared.shouldProcessCall(for: uuid) else { return }  // Should be cross-checked with state to prevent weird event processings
         
-        let name = call.caller?.userId ?? "Unknown"
+        let name = "Bác sỹ \(String(describing: call.caller?.nickname) )"
         let update = CXCallUpdate()
         update.remoteHandle = CXHandle(type: .generic, value: name)
         update.hasVideo = call.isVideoCall
-        update.localizedCallerName = call.caller?.userId ?? "Unknown"
+        update.localizedCallerName = call.caller?.userId ?? "..."
         
         if SendBirdCall.getOngoingCallCount() > 1 {
             // Allow only one ongoing call.
@@ -41,14 +41,27 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
             }
         }
         
+        
     }
     
     public func didEstablish(_ call: DirectCall) {
-        print("Incoming call from didEstablish\(call.caller?.userId ?? "")")
+        CallStatusManager.shared.setCallStatus(value: .waiting)
+    }
+    
+    public func didStartReconnecting(_ call: SendBirdCalls.DirectCall) {
+        CallStatusManager.shared.setCallStatus(value: .waiting)
+    }
+    
+    public func didReconnect(_ call: SendBirdCalls.DirectCall) {
+        if call.isVideoCall {
+            CallStatusManager.shared.setCallStatus(value: .videoCalling)
+        } else {
+            CallStatusManager.shared.setCallStatus(value: .calling)
+        }
     }
     
     public func didConnect(_ call: DirectCall) {
-        print("Incoming call from didConnect\(call.caller?.userId ?? "")")
+
         DispatchQueue.main.async {
             if call.isVideoCall {
                 CallStatusManager.shared.setCallStatus(value: .videoCalling)
@@ -60,11 +73,11 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
     }
     
     public func didRemoteAudioSettingsChange(_ call: DirectCall) {
-        print("Incoming call from didRemoteAudioSettingsChange\(call.caller?.userId ?? "")")
+
     }
     
     public func didEnd(_ call: DirectCall) {
-        print("Incoming call from didEnd\(call.caller?.userId ?? "")")
+
         
         var callId: UUID = UUID()
         if let callUUID = call.callUUID {
@@ -75,7 +88,7 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
         
         CallStatusManager.shared.setCallStatus(value: .finish)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
 
             CallStatusManager.shared.setCallStatus(value: .none)
         }

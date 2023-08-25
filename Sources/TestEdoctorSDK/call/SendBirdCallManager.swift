@@ -36,7 +36,7 @@ public class SendBirdCallManager: NSObject {
     }
     
     public func login( userId: String, accessToken: String) {
-        SendBirdCall.configure(appId: "44745875-6069-46A9-A1A6-0B2A318E4632")
+        SendBirdCall.configure(appId: "E8DBD7BE-354E-4E88-AE17-A43A4726FC52")
         let params = AuthenticateParams(userId: userId, accessToken: accessToken)
         SendBirdCall.authenticate(with: params) { (user, error) in
             print("okoko authenticate")
@@ -55,8 +55,22 @@ public class SendBirdCallManager: NSObject {
 //    }
     
     public func makeCall(calleeId: String, isVideoCall: Bool) {
-        let directCall = DirectCallManager.shared.startCall(calleeId: calleeId, isVideoCall: isVideoCall)
-        directCall.delegate = self
+        CallStatusManager.shared.setCallStatus(value: .waiting)
+
+        let callOptions = CallOptions(isAudioEnabled: true, isVideoEnabled: true, localVideoView: DirectCallManager.shared.localVideoView, remoteVideoView: DirectCallManager.shared.remoteVideoView, useFrontCamera: true)
+        let dialParams = DialParams(calleeId: calleeId, isVideoCall: true, callOptions: callOptions, customItems: [:])
+        
+        SendBirdCall.dial(with: dialParams) { call, error in
+            
+            DispatchQueue.main.async {
+                DirectCallManager.shared.directCall = call
+                DirectCallManager.shared.directCall?.updateLocalVideoView(DirectCallManager.shared.localVideoView)
+                DirectCallManager.shared.directCall?.updateRemoteVideoView(DirectCallManager.shared.remoteVideoView)
+                DirectCallManager.shared.directCall?.delegate = self
+            }
+
+
+        }
     }
     
     public func removeVoIPPushToken() {

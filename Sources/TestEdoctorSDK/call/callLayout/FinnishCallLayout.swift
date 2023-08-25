@@ -11,7 +11,12 @@ struct FinnishCallLayout: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
-                Text("Cuộc gọi đã kết thúc.")
+                Text("Cuộc gọi đã kết thúc.").font(
+                    Font.custom("Inter", size: 25)
+                    .weight(.medium)
+                    )
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.white)
                 
             }
             .frame(width: geometry.size.width, height: geometry.size.height)

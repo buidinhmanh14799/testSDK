@@ -11,7 +11,6 @@ import UserNotifications
 public func requestPermissions() {
     requestCameraPermission()
     requestMicrophonePermission()
-    requestNotificationPermission()
 }
 
 public func requestCameraPermission() {
@@ -30,16 +29,6 @@ public func requestMicrophonePermission() {
             print("Microphone permission granted.")
         } else {
             print("Microphone permission denied.")
-        }
-    }
-}
-
-public func requestNotificationPermission() {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-        if granted {
-            print("Notification permission granted.")
-        } else {
-            print("Notification permission denied.")
         }
     }
 }

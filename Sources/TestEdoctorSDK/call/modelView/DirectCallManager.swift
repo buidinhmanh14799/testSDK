@@ -64,26 +64,13 @@ public class DirectCallManager: UIViewController, ObservableObject {
         directCall?.updateRemoteVideoView(remoteVideoView)
     }
     
-    public func startCall(calleeId: String,  isVideoCall: Bool) -> DirectCall{
-        let callOption = CallOptions(isAudioEnabled: true, isVideoEnabled: true, localVideoView: localVideoView, remoteVideoView: remoteVideoView)
-        
-        localVideoView = SendBirdVideoView(frame: CGRect(x: 0, y: 0, width: 120, height: 160))
-        remoteVideoView = SendBirdVideoView(frame: CGRect(x: 0, y: 0, width: 240, height: 320))
-        
-        let params = DialParams(calleeId: calleeId, callOptions: callOption)
+    public func startCall(calleeId: String,  isVideoCall: Bool) {
+
         
         CallStatusManager.shared.setCallStatus(value: .waiting)
         
-        let directCall = SendBirdCall.dial(with: params) { directCall, error in
-            
-
-        }
+        SendBirdCallManager.shared.makeCall(calleeId: calleeId, isVideoCall: isVideoCall)
         
-        
-        directCall?.updateLocalVideoView(localVideoView)
-        directCall?.updateRemoteVideoView(remoteVideoView)
-        
-        return directCall!
     }
     
 }
