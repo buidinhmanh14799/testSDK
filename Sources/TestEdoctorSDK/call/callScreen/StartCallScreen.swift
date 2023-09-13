@@ -10,7 +10,7 @@ struct StartCallScreen: View {
     var body: some View {
         VStack {
             if callStatusManager.callStatus == .videoCalling || callStatusManager.callStatus == .calling {
-                VideoCallScreen(onClose: onClose).environmentObject(directCallManager)
+                VideoCallScreen().environmentObject(directCallManager)
             } else if callStatusManager.callStatus == .videoCallWithChat {
                 VideoCallWithChatLayout()
                     .environmentObject(directCallManager)
@@ -42,7 +42,7 @@ struct StartCallScreen: View {
                                Spacer()
                                
                                Button(action: {
-                                   directCallManager.endCall()
+                                   directCallManager.endCallFast()
                                    presentationMode.wrappedValue.dismiss()
                                }) {
                                    Image(systemName: "phone.down.fill")

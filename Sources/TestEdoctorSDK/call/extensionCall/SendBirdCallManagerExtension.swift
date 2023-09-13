@@ -32,6 +32,7 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
             call.end()
         } else {
             // Report the incoming call to the system
+            CallStatusManager.shared.setCallStatus(value: .comming)
             if UIApplication.shared.applicationState == UIApplication.State.active{
                 DispatchQueue.main.async {
                     inCommingCall(call: call, isPushNoti: false)
@@ -49,7 +50,7 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
     }
     
     public func didStartReconnecting(_ call: SendBirdCalls.DirectCall) {
-        CallStatusManager.shared.setCallStatus(value: .waiting)
+        CallStatusManager.shared.setCallStatus(value: .reconnect)
     }
     
     public func didReconnect(_ call: SendBirdCalls.DirectCall) {
@@ -69,6 +70,10 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
                 CallStatusManager.shared.setCallStatus(value: .calling)
             }
         }
+        if CountDownManager.shared.remainingTime == 0 {
+            CountDownManager.shared.startCountDown(remainingTime: 60)
+        }
+
 
     }
     
@@ -84,14 +89,10 @@ extension SendBirdCallManager: SendBirdCallDelegate, DirectCallDelegate {
             callId = callUUID
         }
         
+        
         CXCallManager.shared.endCall(for: callId, endedAt: Date(), reason: call.endResult)
         
-        CallStatusManager.shared.setCallStatus(value: .finish)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
-
-            CallStatusManager.shared.setCallStatus(value: .none)
-        }
+        DirectCallManager.shared.endCall()
 
     }
     

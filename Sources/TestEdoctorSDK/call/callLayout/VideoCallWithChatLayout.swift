@@ -8,44 +8,54 @@
 import SwiftUI
 
 struct VideoCallWithChatLayout: View {
-    
+
     @EnvironmentObject var directCallManager : DirectCallManager
     
     @State private var location: CGPoint = CGPoint(x: 50, y: 50)
     @GestureState private var dragOffset: CGSize = .zero
     @State private var isScaled = true
     
+    @ObservedObject var counDownManager = CountDownManager.shared
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                WebViewLayout(onClose: onClose, urlString: "https://e-doctor.dev/tu-van-suc-khoe")
+                WebViewLayout(onClose: onClose, urlString: "https://e-doctor.dev/tu-van-suc-khoe").equatable().padding(.top, 45)
                 
                 ZStack {
-                    SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.remoteVideoView))
+                    BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL, blur: 2)
+                        .frame(minWidth:157, minHeight: 240)
                     
+                    if directCallManager.directCall?.isRemoteVideoEnabled == true {
+                        SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.remoteVideoView))
+                    }
+                }
+                .onChange(of: counDownManager.remainingTime) { newValue in
+                    if newValue == 0 {
+                        directCallManager.endCall()
+                    }
                 }
                 .frame(width: 157, height: 240).background(Color.gray)
                 .cornerRadius(18)
-                .scaleEffect(isScaled ? 8 : 1.0)
+                .scaleEffect(isScaled ? 4 : 1.0)
                 .animation(.easeInOut)
                 .position(location)
                 .gesture(
                     simpleDrag
-                ) 
+                )
                 .gesture(
                     TapGesture()
                         .onEnded {
                             onClick()
                         }
                 )
-                 
                 
             }.onAppear {
-                location = CGPoint(x: geometry.size.width - 90, y: 200)
+                location = CGPoint(x: geometry.size.width - 90, y: 250)
                 isScaled = false
             }
             
-        }.edgesIgnoringSafeArea(.all)
+        }.edgesIgnoringSafeArea(.bottom)
         
         
     }
@@ -53,7 +63,10 @@ struct VideoCallWithChatLayout: View {
     var simpleDrag: some Gesture {
         DragGesture()
             .onChanged { value in
-                self.location = value.location
+                if value.location.x < UIScreen.main.bounds.width - 157/2 && value.location.y <  UIScreen.main.bounds.height - 240/2 && value.location.x > 157/2 && value.location.y > 240/2{
+                    self.location = value.location
+                }
+
             }
     }
     

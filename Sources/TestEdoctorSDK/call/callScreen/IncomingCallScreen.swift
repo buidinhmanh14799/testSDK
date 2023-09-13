@@ -11,11 +11,11 @@ struct IncommingCallScreen: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var directCallManager = DirectCallManager.shared
     @ObservedObject var callStatusManager = CallStatusManager.shared
-    
+     
     var body: some View {
         VStack {
             if (callStatusManager.callStatus == .videoCalling ) {
-                VideoCallScreen(onClose: onClose)
+                VideoCallScreen()
                     .environmentObject(directCallManager)
                     .environmentObject(callStatusManager)
             } else if callStatusManager.callStatus == .finish || callStatusManager.callStatus == .none{
@@ -24,7 +24,7 @@ struct IncommingCallScreen: View {
                 VideoCallWithChatLayout()
                     .environmentObject(directCallManager)
             } else {
-                IncomingVideoCallLayout(onClose: onClose)
+                IncomingVideoCallLayout()
                     .environmentObject(directCallManager)
                     .environmentObject(callStatusManager)
             }
@@ -41,6 +41,7 @@ struct IncommingCallScreen: View {
             if newValue == .none {
                 onClose()
             }
+            print("okok\(newValue)")
         }
     }
     

@@ -8,9 +8,10 @@
 import Foundation
 
 public class CallStatusManager : ObservableObject {
+    
     static let shared = CallStatusManager()
     
-    @Published var callStatus: CallStatus = .none
+    @Published var callStatus: CallStatus = .null
     
     public func setCallStatus(value : CallStatus) {
         callStatus = value

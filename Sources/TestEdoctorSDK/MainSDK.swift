@@ -9,9 +9,10 @@ import SwiftUI
 import WebKit
 import SafariServices
 import Foundation
+import SendBirdCalls
 
-public func openWebView(currentViewController: UIViewController? = nil, withURL urlString: String) {
-    let customWebViewController = CustomWebViewController(urlString: urlString)
+public func openModalWebView(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
+    let customWebViewController = CustomWebViewController(urlString: urlString ?? urlDefault)
     if (currentViewController != nil) {
         currentViewController!.present(customWebViewController, animated: true)
     } else if let currentViewController2 = UIApplication.shared.windows.first?.rootViewController {
@@ -19,19 +20,105 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
     }
 }
 
-public func showFullScreenWebView(currentViewController: UIViewController? = nil, withURL urlString: String) {
-    // Tạo một SwiftUI View chứa WebView và nút "Close"
-    let fullScreenWebView = FullScreenWebView(urlString: urlString)
+public func openWebView(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
+
+    let fullScreenWebView = FullScreenWebView(urlString: urlString ?? urlDefault)
     
-    // Tạo một UIHostingController chứa fullScreenWebView
+
     let hostingController = UIHostingController(rootView: fullScreenWebView)
     
-    // Hiển thị UIHostingController fullscreen
+
     if currentViewController != nil {
         currentViewController!.present(hostingController, animated: true, completion: nil)
     } else if let currentViewController2 = UIApplication.shared.windows.first?.rootViewController {
         hostingController.modalPresentationStyle = .fullScreen
         currentViewController2.present(hostingController, animated: true, completion: nil)
     }
+}
+
+public func requestPermission() {
+    requestPermissions()
+}
+
+public func logOutSendBird() {
+    SendBirdCallManager.shared.removeVoIPPushToken()
+    SendBirdCall.removeAllDelegates()
+    SendBirdCall.deauthenticate { error in
+            if let error = error {
+                print("Error logging out from SendBird Calls: \(error.localizedDescription)")
+            } else {
+                print("Logged out from SendBird Calls successfully")
+            }
+        }
+    UserDataManager.deleteUserInfo()
+}
+
+public func logInSendBird(userId: String, accessToken: String) {
+    SendBirdCallManager.shared.login(userId: userId, accessToken: accessToken)
+}
+
+public func configAppId(appId: String) {
+    SendBirdCallManager.shared.configure(appId: appId)
+}
+
+public func configAppIdAndLogin(appId: String, userId: String, accessToken: String) {
+    SendBirdCallManager.shared.configure(appId: appId, userId: userId, accessToken: accessToken)
+}
+
+public func addDirectCallSounds(dialingName: String? = nil, reconnectingName: String? = nil, reconnectedName: String? = nil) {
+    // SendBirdCall.setDirectCallSound("Ringing.mp3", forKey: .ringing)
+    if (dialingName != nil) {
+        SendBirdCall.addDirectCallSound("Dialing.mp3", forType: .dialing)
+    }
+    
+    if (reconnectingName != nil) {
+        SendBirdCall.addDirectCallSound("ConnectionLost.mp3", forType: .reconnecting)
+    }
+
+    if (reconnectedName != nil) {
+        SendBirdCall.addDirectCallSound("ConnectionRestored.mp3", forType: .reconnected)
+    }
+
+    // If you want to remove added DirectCall sounds,
+    // Use `SendBirdCall.removeDirectCallSound(forType:)`
+}
+
+@objc public class DlvnSdk: NSObject {
+    @objc public func openWebViewOC(currentViewController: UIViewController? = nil) {
+        openWebView(currentViewController: currentViewController)
+    }
+    
+    @objc public func openModalWebViewOC(currentViewController: UIViewController? = nil) {
+        openModalWebView(currentViewController: currentViewController)
+    }
+    
+    @objc public func sampleFuncOC(data: String) -> String{
+         return "data của bạn gửi là \(data)"
+    }
+    
+    @objc public func requestPermissionOC() {
+        requestPermission()
+    }
+    
+    @objc public func logOutSendBirdOC() {
+        logOutSendBird()
+    }
+    
+    @objc public func LogInSendBirdOC(userId: String, accessToken: String) {
+        logInSendBird(userId: userId, accessToken: accessToken)
+    }
+    
+    @objc public func ConfigAppIdOC(appId: String) {
+        SendBirdCallManager.shared.configure(appId: appId)
+    }
+
+    @objc public func ConfigAppIdAndLoginOC(appId: String, userId: String, accessToken: String) {
+        SendBirdCallManager.shared.configure(appId: appId, userId: userId, accessToken: accessToken)
+    }
+    
+    @objc public func addDirectCallSoundsOC(dialingName: String? = nil, reconnectingName: String? = nil, reconnectedName: String? = nil) {
+        addDirectCallSounds(dialingName: dialingName, reconnectingName: reconnectingName, reconnectedName: reconnectedName)
+    }
+    
 }
 

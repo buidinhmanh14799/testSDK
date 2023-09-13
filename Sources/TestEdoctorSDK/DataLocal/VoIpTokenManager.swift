@@ -15,7 +15,7 @@ public class VoIpTokenManager {
     }
     
     static func getToken() -> Data? {
-        if let data = UserDefaults.standard.data(forKey: voIpTokenKey) {
+        if UserDefaults.standard.data(forKey: voIpTokenKey) != nil {
             return UserDefaults.standard.data(forKey: voIpTokenKey)
         }
         return nil

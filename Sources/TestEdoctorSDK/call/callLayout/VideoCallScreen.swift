@@ -4,27 +4,14 @@ import WebKit
 struct VideoCallScreen: View {
     
     @EnvironmentObject var directCallManager : DirectCallManager
-    var onClose: (() -> Void)
+//    var onClose: (() -> Void)
     @State private var isLocalAudioEnabled = true
     @State private var isLocalVideoEnabled = true
     @State private var isCallActive = true
     
     @State private var isFrontCam = true
     
-    @State private var secondsElapsed = 0
-    var timer: Timer {
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            self.secondsElapsed += 1
-        }
-    }
-    
-    var timeFormatted: String {
-        let minutes = secondsElapsed / 60
-        let seconds = secondsElapsed % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
-    
-    
+    @ObservedObject var counDownManager = CountDownManager.shared
     
     var body: some View {
         GeometryReader { geometry in
@@ -33,9 +20,8 @@ struct VideoCallScreen: View {
                 SendBirdVideoViewWrapper(sendBirdVideoView: (directCallManager.remoteVideoView)).frame(width: geometry.size.width, height: geometry.size.height)
                 
                 if directCallManager.directCall == nil || directCallManager.directCall?.isRemoteVideoEnabled == false {
-                    BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL)
+                    BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL, blur: 5)
                         .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
-                        .blur(radius: 5)
                         .opacity(0.7)
                 }
                 
@@ -74,7 +60,9 @@ struct VideoCallScreen: View {
                         
                         HStack {
                             Spacer()
-                            AvatarView(UrlString: directCallManager.directCall?.caller?.profileURL, size: 62).padding()
+                            AvatarView(UrlString: directCallManager.directCall?.caller?.profileURL, size: 62)
+                                .equatable()
+                                .padding()
                             VStack{
                                 HStack {
                                     Text("\(directCallManager.directCall?.caller?.nickname ?? "---")")
@@ -85,7 +73,7 @@ struct VideoCallScreen: View {
                                         .foregroundColor(Color(red: 0.29, green: 0.31, blue: 0.34))
                                     Spacer()
                                     HStack(alignment: .center, spacing: 0) {
-                                        Text("\(timeFormatted)")
+                                        Text("\(timeFormatted(secondsElapsed: counDownManager.remainingTime))")
                                         .font(
                                         Font.custom("Mulish", size: 14)
                                         .weight(.heavy)
@@ -93,9 +81,6 @@ struct VideoCallScreen: View {
                                         .kerning(0.28)
                                         .multilineTextAlignment(.center)
                                         .foregroundColor(Color(red: 0.87, green: 0.09, blue: 0.12))
-                                        .onAppear {
-                                            _ = self.timer
-                                        }
                                     }
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
@@ -103,6 +88,11 @@ struct VideoCallScreen: View {
                                     .cornerRadius(10)
                                     .padding(.trailing, 24)
                                     .padding(.top, -10)
+                                    .onChange(of: counDownManager.remainingTime) { newValue in
+                                        if newValue == 0 {
+                                            directCallManager.endCall()
+                                        }
+                                    }
                                 }
 
                                 HStack {
@@ -135,7 +125,6 @@ struct VideoCallScreen: View {
                         HStack {
                             Button(action: {
                                 CallStatusManager.shared.setCallStatus(value: .videoCallWithChat)
-
                             }) {
                                 Image(systemName: "ellipsis.message.fill")
                                     .font(.system(size: 22))
@@ -148,7 +137,6 @@ struct VideoCallScreen: View {
                             
                             Button(action: {
                                 isLocalAudioEnabled.toggle()
-
                             }) {
                                 Image(systemName: "mic.fill")
                                     .frame(width: 43.904, height: 43.904)
@@ -199,7 +187,6 @@ struct VideoCallScreen: View {
                             
                             Button(action: {
                                 directCallManager.endCall()
-                                onClose()
                             }) {
                                 ZStack {
                                     Image(systemName: "phone.down.fill")
@@ -233,7 +220,7 @@ struct VideoCallScreen: View {
                 }.padding(.bottom, 35)
                 .frame(width: geometry.size.width, height: geometry.size.height)
             }.frame(width: geometry.size.width, height: geometry.size.height)
-            .background(Color.green)
+                .background(Color.gray)
             .onAppear {
                 isLocalAudioEnabled = directCallManager.directCall?.isLocalAudioEnabled ?? true
                 isLocalVideoEnabled = directCallManager.directCall?.isLocalVideoEnabled ?? true

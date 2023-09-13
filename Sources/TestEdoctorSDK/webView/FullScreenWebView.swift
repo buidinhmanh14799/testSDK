@@ -7,10 +7,11 @@ struct FullScreenWebView: View {
     
     var body: some View {
         WebViewLayout(onClose: onClose, urlString: urlString)
-        .edgesIgnoringSafeArea(.all)
+            .edgesIgnoringSafeArea(.bottom)
         .onDisappear {
-            if let presentingViewController = UIApplication.shared.windows.first?.rootViewController?.presentedViewController {
-                presentingViewController.dismiss(animated: true, completion: nil)
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let currentViewController = windowScene.windows.first?.rootViewController {
+                currentViewController.dismiss(animated: true, completion: nil)
             }
         }
     }
@@ -20,10 +21,15 @@ struct FullScreenWebView: View {
     }
 }
 
-struct WebViewLayout: View {
+struct WebViewLayout: View, Equatable {
+    static func == (lhs: WebViewLayout, rhs: WebViewLayout) -> Bool {
+        return true
+    }
+    
     let onClose: (() -> Void)
     let urlString: String
-    private let webView = WKWebView()
+    private let webView = MyWebView()
+    @State private var isLoading: Bool = true
     
     var body: some View {
         VStack {
@@ -40,7 +46,7 @@ struct WebViewLayout: View {
                 .padding()
                 Spacer()
                 VStack {
-                    Text("BTH")
+                    Text("DNVL")
                         .font(
                         Font.custom("Mulish", size: 16)
                         .weight(.bold)
@@ -57,6 +63,7 @@ struct WebViewLayout: View {
                 Spacer()
                 
                 Button(action: {
+                    isLoading = true
                     webView.reload()
                 }) {
                     Image(systemName: "goforward")
@@ -67,25 +74,64 @@ struct WebViewLayout: View {
                         .rotationEffect(.degrees(50))
                 }.padding()
                 
-            }.padding(.top, 30)
-            
-            WebView(urlString: urlString, webView: webView).padding(.top, -10)
+            }.padding(.top, -15)
+            ZStack {
+
+                WebView(webView: webView, urlString: urlString, isLoading: $isLoading).padding(.top, -10)
+                if isLoading {
+                    if #available(iOS 14.0, *) {
+                        ProgressView("Đang tải...").padding()
+                    } else {
+                        Text("Đang tải...").padding().foregroundColor(.gray)
+                    }
+                }
+            }
+
         }
     }
 }
 
 struct WebView: UIViewRepresentable {
-    let urlString: String
-    let webView: WKWebView
+    var webView: MyWebView
+    var urlString: String
+    @Binding var isLoading: Bool
     
     func makeUIView(context: Context) -> WKWebView {
-        if let url = URL(string: urlString) {
-            webView.load(URLRequest(url: url))
-        }
+        webView.navigationDelegate = context.coordinator
+        
+        
         return webView
     }
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
-        // Không cần thực hiện gì trong updateUIView
+        if urlString != "" {
+            let url = URL(string: urlString)!
+            let request = URLRequest(url: url)
+//            request.cachePolicy = .reloadIgnoringLocalCacheData
+            uiView.load(request)
+        }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, WKNavigationDelegate {
+        var parent: WebView
+        
+        init(_ parent: WebView) {
+            self.parent = parent
+        }
+        
+        // Xử lý các sự kiện liên quan đến quá trình tải WebView ở đây
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            parent.isLoading = false // Ẩn activityIndicator khi tải hoàn thành
+            
+            webView.evaluateJavaScript("javascript:window.sessionStorage.setItem('manh', '{\"company\":\"DLVN\", \"partnerid\":\"123sd\"}')")
+        }
+        
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            parent.isLoading = false // Ẩn activityIndicator nếu có lỗi xảy ra
+        }
     }
 }

@@ -23,9 +23,10 @@ class CustomWebViewController: UIViewController, WKNavigationDelegate {
         view.addSubview(webView)
 
         // Khởi tạo và cấu hình activity indicator
-        activityIndicator = UIActivityIndicatorView(style: .large)
+        activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.color = .gray
         activityIndicator.center = view.center
+        
         view.addSubview(activityIndicator)
 
         if let url = URL(string: urlString) {

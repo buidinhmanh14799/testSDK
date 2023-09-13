@@ -20,23 +20,15 @@ public class SendBirdCallManager: NSObject {
 
     public func configure(appId: String, userId: String, accessToken: String) {
         SendBirdCall.configure(appId: appId)
-        
-        let params = AuthenticateParams(userId: userId, accessToken: accessToken)
-        SendBirdCall.authenticate(with: params) { (user, error) in
-            
-            print("okoko authenticate")
-            
-            let userInfo = UserInfo(appId: appId, userId: userId, accessToken: accessToken)
-            UserDataManager.saveUserInfo(userInfo: userInfo)
-            
-            _ = PushRegistryHandler.shared
-
-        }
-        SendBirdCall.addDelegate(self, identifier: "com.edoctor.AppTestSDK")
+        login(userId: userId, accessToken: accessToken)
+    }
+    
+    public func configure(appId: String) {
+        SendBirdCall.configure(appId: appId)
     }
     
     public func login( userId: String, accessToken: String) {
-        SendBirdCall.configure(appId: "E8DBD7BE-354E-4E88-AE17-A43A4726FC52")
+
         let params = AuthenticateParams(userId: userId, accessToken: accessToken)
         SendBirdCall.authenticate(with: params) { (user, error) in
             print("okoko authenticate")

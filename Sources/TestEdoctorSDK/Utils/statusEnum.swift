@@ -8,6 +8,8 @@
 import Foundation
 
 public enum CallStatus {
+    
+    case null
     case none
     case comming
     case waiting
@@ -16,6 +18,7 @@ public enum CallStatus {
     case reconnect
     case finish
     case videoCallWithChat
+    
 }
 
 public func getTextCallStatus(callStatus: CallStatus) -> String {
@@ -24,15 +27,10 @@ public func getTextCallStatus(callStatus: CallStatus) -> String {
         return "Xin vui lòng chờ trong giây lát"
 
     case .reconnect:
-        return "Đang kết nối lại"
+        return "Đang kết nối lại..."
 
     default:
-        return ""
+        return "Đang xử lý..."
     }
 }
 
-public enum AppStatus {
-    case active
-    case inActive
-    case background
-}

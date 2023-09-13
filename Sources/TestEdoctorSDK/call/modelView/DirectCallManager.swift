@@ -20,7 +20,7 @@ public class DirectCallManager: UIViewController, ObservableObject {
     }
     
     public func didEnd(_ call: SendBirdCalls.DirectCall) {
-        CallStatusManager.shared.setCallStatus(value: .finish)
+        DirectCallManager.shared.endCall()
     }
     
     
@@ -41,11 +41,19 @@ public class DirectCallManager: UIViewController, ObservableObject {
     
     public func resetDirectCall() {
         self.directCall = nil
-        CallStatusManager.shared.setCallStatus(value: .none)
     }
     
     public func endCall() {
         directCall?.end()
+        CallStatusManager.shared.setCallStatus(value: .finish)
+        CountDownManager.shared.stopTimer()
+        resetDirectCall()
+    }
+    
+    public func endCallFast() {
+        CallStatusManager.shared.setCallStatus(value: .none)
+        directCall?.end()
+        CountDownManager.shared.stopTimer()
         resetDirectCall()
     }
     
@@ -59,6 +67,8 @@ public class DirectCallManager: UIViewController, ObservableObject {
         directCall?.accept(with: param)
         
         CallStatusManager.shared.setCallStatus(value: .waiting)
+        
+        CountDownManager.shared.startCountDown(remainingTime: 150)
         
         directCall?.updateLocalVideoView(localVideoView)
         directCall?.updateRemoteVideoView(remoteVideoView)

@@ -11,7 +11,6 @@ struct IncomingVideoCallLayout: View {
     
     @EnvironmentObject var directCallManager : DirectCallManager
     @EnvironmentObject var callStatusManager : CallStatusManager
-    var onClose: (() -> Void)
     
     @State private var isMicMuted = true
     @State private var isCameraOff = true
@@ -30,7 +29,7 @@ struct IncomingVideoCallLayout: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL).frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+                BackgroundImage(UrlString: directCallManager.directCall?.caller?.profileURL, blur: 5).frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
                 
                 Rectangle()
                     .foregroundColor(.clear)
@@ -64,6 +63,8 @@ struct IncomingVideoCallLayout: View {
                         }
                         
                         AvatarView(UrlString: directCallManager.directCall?.caller?.profileURL, size: 157)
+                            .equatable()
+                            
                     }.padding(.top)
                     
                     Text("BS.\(directCallManager.directCall?.caller?.nickname ?? "") gọi Video")
@@ -114,8 +115,7 @@ struct IncomingVideoCallLayout: View {
                         HStack{
                             Spacer()
                             Button(action: {
-                                directCallManager.endCall()
-                                onClose()
+                                directCallManager.endCallFast()
                             }) {
                                 ZStack {
                                     Image(systemName: "phone.down.fill")
@@ -189,14 +189,12 @@ struct IncomingVideoCallLayout: View {
                         .padding(.top, 48)
 
                         }
-                        
-                    
                     
                     Spacer()
                 }
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
