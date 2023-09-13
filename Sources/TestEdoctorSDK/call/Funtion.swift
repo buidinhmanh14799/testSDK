@@ -10,7 +10,7 @@ import SwiftUI
 import SendBirdCalls
 
 public func startVideoCallLayout(calleeId: String, isVideoCall: Bool) {
-    requestPermissions()
+//    requestPermissions()
     SendBirdCallManager.shared.makeCall(calleeId: calleeId, isVideoCall: isVideoCall)
     
     
