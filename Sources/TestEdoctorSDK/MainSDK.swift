@@ -26,12 +26,11 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
     
 
     let hostingController = UIHostingController(rootView: fullScreenWebView)
-    
+    hostingController.modalPresentationStyle = .fullScreen
 
     if currentViewController != nil {
         currentViewController!.present(hostingController, animated: true, completion: nil)
     } else if let currentViewController2 = UIApplication.shared.windows.first?.rootViewController {
-        hostingController.modalPresentationStyle = .fullScreen
         currentViewController2.present(hostingController, animated: true, completion: nil)
     }
 }
@@ -63,6 +62,10 @@ public func configAppId(appId: String) {
 
 public func configAppIdAndLogin(appId: String, userId: String, accessToken: String) {
     SendBirdCallManager.shared.configure(appId: appId, userId: userId, accessToken: accessToken)
+}
+
+public func startCall(userId: String, isVideoCall: Bool) {
+    startVideoCallLayout(calleeId: userId, isVideoCall: isVideoCall)
 }
 
 public func addDirectCallSounds(dialingName: String? = nil, reconnectingName: String? = nil, reconnectedName: String? = nil) {
@@ -118,6 +121,10 @@ public func addDirectCallSounds(dialingName: String? = nil, reconnectingName: St
     
     @objc public func addDirectCallSoundsOC(dialingName: String? = nil, reconnectingName: String? = nil, reconnectedName: String? = nil) {
         addDirectCallSounds(dialingName: dialingName, reconnectingName: reconnectingName, reconnectedName: reconnectedName)
+    }
+    
+    @objc public func startCall(userId: String, isVideoCall: Bool) {
+        startVideoCallLayout(calleeId: userId, isVideoCall: isVideoCall)
     }
     
 }
