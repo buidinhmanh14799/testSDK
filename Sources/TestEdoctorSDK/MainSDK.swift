@@ -28,7 +28,7 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
 
 @objc public class DlvnSdk: NSObject {
     @objc public func openWebViewOC(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
-        openWebView(currentViewController: currentViewController)
+        openWebView(currentViewController: currentViewController, withURL: urlString)
     }
     
 }
