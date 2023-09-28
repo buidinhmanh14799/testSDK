@@ -78,7 +78,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: view.safeAreaInsets.top + 85).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: view.safeAreaInsets.top).isActive = true
         
         
         NSLayoutConstraint.activate([
