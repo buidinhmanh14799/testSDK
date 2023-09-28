@@ -208,6 +208,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         // Xử lý lỗi tải trang web nếu cần
+        print("error\(error)")
     }
     
     
