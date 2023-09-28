@@ -58,7 +58,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     
     private func _setUpUI(){
         
-        activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator = UIActivityIndicatorView()
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.hidesWhenStopped = true
         activityIndicator.color = .red
