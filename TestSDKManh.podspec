@@ -1,5 +1,5 @@
 Pod::Spec.new do |spec|
-spec.name = "TestSDK"
+spec.name = "TestSDKManh"
 spec.version = "1.0.5"
 spec.summary = "My Library to learn"
 spec.description = "It is a library only for learning purpose"
