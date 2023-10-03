@@ -161,7 +161,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     let closeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let closeIcon = UIImage(named: "backImage", in: Bundle.module, compatibleWith: nil)?.withTintColor(.white)
+        let closeIcon = UIImage(named: "backImage", in: Bundle(for: WebViewController.self), compatibleWith: nil)?.withTintColor(.white)
         button.setImage(closeIcon, for: .normal)
         return button
     }()
@@ -169,7 +169,7 @@ class WebViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     let reloadButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let reloadIcon = UIImage(named: "reloadImage", in: Bundle.module, compatibleWith: nil)?.withTintColor(.white)
+        let reloadIcon = UIImage(named: "reloadImage", in: Bundle(for: WebViewController.self), compatibleWith: nil)?.withTintColor(.white)
         
         button.setImage(reloadIcon, for: .normal)
         return button
