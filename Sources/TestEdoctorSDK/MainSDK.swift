@@ -9,7 +9,7 @@ import SwiftUI
 import WebKit
 import SafariServices
 import Foundation
-
+import AVFoundation
 
 
 public func openWebView(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
@@ -25,9 +25,31 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
 }
 
 
+
+public func requestPermissions() {
+    requestCameraPermission()
+}
+
+public func requestCameraPermission() {
+    AVCaptureDevice.requestAccess(for: .video) { granted in
+        if granted {
+            print("Camera permission granted.")
+        } else {
+            print("Camera permission denied.")
+        }
+    }
+}
+
+
+
+
 @objc public class DlvnSdk: NSObject {
     @objc public func openWebViewOC(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
         openWebView(currentViewController: currentViewController, withURL: urlString)
+    }
+    
+    @objc public func requestPermissions() {
+        requestCameraPermission()
     }
     
 }
