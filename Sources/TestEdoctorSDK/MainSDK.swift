@@ -44,10 +44,18 @@ public func requestCameraPermission() {
 }
 
 public func requestPhotoPermission() {
-    print("==>\(PHPhotoLibrary.authorizationStatus())")
-    PHPhotoLibrary.requestAuthorization { (newStatus) in
-        if newStatus == .authorized {
-            print("Photo permission granted.")
+    print("vao")
+    PHPhotoLibrary.requestAuthorization { status in
+        switch status {
+        case .authorized:
+            print("authorized")
+        case .denied, .restricted:
+            print("denied")
+        case .notDetermined:
+            print("notDetermined")
+        @unknown default:
+            print("default")
+            break
         }
     }
 }
