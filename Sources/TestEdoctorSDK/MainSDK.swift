@@ -10,6 +10,7 @@ import WebKit
 import SafariServices
 import Foundation
 import AVFoundation
+import Photos
 
 
 public func openWebView(currentViewController: UIViewController? = nil, withURL urlString: String? = nil) {
@@ -28,6 +29,7 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
 
 public func requestPermissions() {
     requestCameraPermission()
+    requestPhotoPermission()
 }
 
 public func requestCameraPermission() {
@@ -36,6 +38,15 @@ public func requestCameraPermission() {
             print("Camera permission granted.")
         } else {
             print("Camera permission denied.")
+        }
+    }
+}
+
+public func requestPhotoPermission() {
+    PHPhotoLibrary.requestAuthorization { (newStatus) in
+        if newStatus == .authorized {
+            // Đã được cấp quyền truy cập
+            // Bạn có thể truy cập tệp ở đây
         }
     }
 }
