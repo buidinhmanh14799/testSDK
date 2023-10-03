@@ -70,8 +70,8 @@ public func requestPhotoPermission() {
         openWebView(currentViewController: currentViewController, withURL: urlString)
     }
     
-    @objc public func requestPermissions() {
-        requestCameraPermission()
+    @objc public func requestPermissions1() {
+        requestPermissions()
     }
     
 }
