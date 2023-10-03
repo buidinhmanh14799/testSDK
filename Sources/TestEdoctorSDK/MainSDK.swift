@@ -53,6 +53,8 @@ public func requestPhotoPermission() {
             print("denied")
         case .notDetermined:
             print("notDetermined")
+        case .limited:
+            print("limited")
         @unknown default:
             print("default")
             break
