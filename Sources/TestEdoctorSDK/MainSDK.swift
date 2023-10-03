@@ -28,8 +28,9 @@ public func openWebView(currentViewController: UIViewController? = nil, withURL 
 
 
 public func requestPermissions() {
-    requestCameraPermission()
     requestPhotoPermission()
+    requestCameraPermission()
+
 }
 
 public func requestCameraPermission() {
