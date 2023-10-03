@@ -43,10 +43,10 @@ public func requestCameraPermission() {
 }
 
 public func requestPhotoPermission() {
+    print("==>\(PHPhotoLibrary.authorizationStatus())")
     PHPhotoLibrary.requestAuthorization { (newStatus) in
         if newStatus == .authorized {
-            // Đã được cấp quyền truy cập
-            // Bạn có thể truy cập tệp ở đây
+            print("Photo permission granted.")
         }
     }
 }
